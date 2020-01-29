@@ -8,6 +8,8 @@ namespace Tovar
 {
     public static class Shops
     {
+        private static SaveManager manufacturerSaver = new SaveManager("manufacturers.txt");
+
         private static List<Shop> shops = new List<Shop>();
 
         public static List<Shop> GetShops
@@ -30,6 +32,34 @@ namespace Tovar
             }
             shop = new Shop();
             return false;
+        }
+
+        public static void AddShopItem(string manufacturerName, Item item)
+        {
+            for (int i = 0; i < shops.Count; i++)
+            {
+                if (shops[i].Manufacturer.Name == manufacturerName)
+                {
+                    shops[i].AddItem(item);
+                }
+            }
+        }
+
+        public static void SaveManufacturers()
+        {
+            manufacturerSaver.CreateFile();
+            foreach (Shop shop in shops)
+                manufacturerSaver.WriteObject(shop.Manufacturer);
+        }
+
+        public static void LoadManufacturers()
+        {
+            shops.Clear();
+            LoadManager manufacturerLoader = new LoadManager("manufacturers.txt");
+            manufacturerLoader.BeginRead();
+            while (manufacturerLoader.IsLoading)
+                shops.Add(new Shop(manufacturerLoader.Read(new Manufacturer.Loader())));
+            manufacturerLoader.EndRead();
         }
     }
 }

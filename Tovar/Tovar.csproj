@@ -50,12 +50,14 @@
   <ItemGroup>
     <Compile Include="ItemReader.cs" />
     <Compile Include="ItemWriter.cs" />
+    <Compile Include="LoadManager.cs" />
     <Compile Include="Phone.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Manufacturer.cs" />
     <Compile Include="Randomizer.cs" />
+    <Compile Include="SaveManager.cs" />
     <Compile Include="Shop.cs" />
     <Compile Include="Shops.cs" />
   </ItemGroup>

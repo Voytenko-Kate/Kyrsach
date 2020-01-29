@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tovar
 {
-    public class Item
+    public class Item : IWritableObject, IReadableObject
     {
         private string itemBarcode;
         private string itemVendorCode;
@@ -67,6 +67,46 @@ namespace Tovar
             this.morzha = Randomizer.RandomMorzha();
             this.itemDateOfManufacturing = dateOfManufacuring;
             this.itemManufacturer = manufacturer;
+        }
+
+        private Item(ILoadManager man)
+        {
+            this.itemBarcode = man.ReadLine().Split(':')[1];
+            this.itemVendorCode = man.ReadLine().Split(':')[1];
+            this.itemName = man.ReadLine().Split(':')[1];
+            this.itemUnit = man.ReadLine().Split(':')[1];
+            float.TryParse(man.ReadLine().Split(':')[1], out this.itemZakupPrice);
+            this.itemShelfLife = man.ReadLine().Split(':')[1];
+            uint.TryParse(man.ReadLine().Split(':')[1], out this.itemCount);
+            float.TryParse(man.ReadLine().Split(':')[1], out this.morzha);
+            DateTime.TryParse(man.ReadLine().Split(':')[1], out this.itemDateOfManufacturing);
+            Shop shop;
+            Shops.FindShopByManufacturerName(man.ReadLine().Split(':')[1], out shop);
+            this.itemManufacturer = shop.Manufacturer;
+            Shops.AddShopItem(this.itemManufacturer.Name, this);
+        }
+
+        public void Write(ISaveManager man)
+        {
+            man.WriteLine($"itemBarcode:{this.itemBarcode}");
+            man.WriteLine($"itemVendorCode:{this.itemVendorCode}");
+            man.WriteLine($"itemName:{this.itemName}");
+            man.WriteLine($"itemUnit:{this.itemUnit}");
+            man.WriteLine($"itemZakupPrice:{this.itemZakupPrice.ToString()}");
+            man.WriteLine($"itemShelfLife:{this.itemShelfLife}");
+            man.WriteLine($"itemCount:{this.itemCount.ToString()}");
+            man.WriteLine($"morzha:{this.morzha.ToString()}");
+            man.WriteLine($"itemDateOfManufacturing:{this.itemDateOfManufacturing.ToString()}");
+            man.WriteLine($"itemManufacturer:{this.itemManufacturer.Name}");
+        }
+
+        public class Loader : IReadableObjectLoader<Item>
+        {
+            public Loader() { }
+            public Item Load(ILoadManager man)
+            {
+                return new Item(man);
+            }
         }
     }
 }

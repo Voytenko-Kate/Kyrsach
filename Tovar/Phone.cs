@@ -17,6 +17,8 @@ namespace Tovar
             this.phone = number;
         }
 
+        public string RawString{ get => this.phone.ToString(); }
+
         public override string ToString()
         {
             string phoneStr = "", numberStr = this.phone.ToString();

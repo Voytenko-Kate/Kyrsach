@@ -8,17 +8,39 @@ namespace Tovar
 {
     class Program
     {
+        private static SaveManager itemSaver = new SaveManager("items.txt");
+
+        private static List<Item> items = new List<Item>();
+
+        public static void SaveItems()
+        {
+            itemSaver.CreateFile();
+            foreach (Item item in items)
+                itemSaver.WriteObject(item);
+        }
+
+        public static void LoadItems()
+        {
+            items.Clear();
+            LoadManager itemLoader = new LoadManager("items.txt");
+            itemLoader.BeginRead();
+            while (itemLoader.IsLoading)
+                items.Add(itemLoader.Read(new Item.Loader()));
+            itemLoader.EndRead();
+        }
+
         static void Main(string[] args)
         {
-            List<Item> items = new List<Item>();
             while (true)
             {
                 if (items.Count > 0) Console.WriteLine("Всего товаров: {0}.", items.Count);
                 Console.WriteLine("Список доступных команд: ");
                 Console.WriteLine("Для ввода товаров через консоль напишите \"консоль\", для ввода товаров из файла напишите \"файл\";");
+                Console.WriteLine("Для загрузки данных напишите \"загрузить\";");
                 if (items.Count > 0)
                 {
                     Console.WriteLine("Для вывода товаров в документ Excel напишите \"документ\";");
+                    Console.WriteLine("Для сохранения данных напишите \"сохранить\";");
                     Console.WriteLine("для очистки списка товаров напишите \"очистить\";");
                 }
                 Console.Write("Для выхода из программы напишите \"выход\".");
@@ -26,6 +48,21 @@ namespace Tovar
                 string command = Console.ReadLine().ToUpper();
                 switch (command)
                 {
+                    case "СОХРАНИТЬ":
+                        {
+                            if (items.Count == 0 && Shops.GetShops.Count == 0) break;
+                            Shops.SaveManufacturers();
+                            SaveItems();
+                            break;
+                        }
+
+                    case "ЗАГРУЗИТЬ":
+                        {
+                            Shops.LoadManufacturers();
+                            LoadItems();
+                            break;
+                        }
+
                     case "КОНСОЛЬ":
                         {
                             try

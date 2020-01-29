@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tovar
 {
-    public class Manufacturer
+    public class Manufacturer : IWritableObject, IReadableObject
     {
         private string manufacturerName;
         private string manufacturingCountry;
@@ -31,6 +31,33 @@ namespace Tovar
             this.manufacturingCountry = country;
             this.manufacturerAddress = address;
             this.manufacturerPhone = phone;
+        }
+
+        private Manufacturer(ILoadManager man)
+        {
+            this.manufacturerName = man.ReadLine().Split(':')[1];
+            this.manufacturingCountry = man.ReadLine().Split(':')[1];
+            this.manufacturerAddress = man.ReadLine().Split(':')[1];
+            ulong phoneNum;
+            ulong.TryParse(man.ReadLine().Split(':')[1], out phoneNum);
+            this.manufacturerPhone = new Phone(phoneNum);
+        }
+
+        public void Write(ISaveManager man)
+        {
+            man.WriteLine($"manufacturerName:{this.manufacturerName}");
+            man.WriteLine($"manufacturingCountry:{this.manufacturingCountry}");
+            man.WriteLine($"manufacturerAddress:{this.manufacturerAddress}");
+            man.WriteLine($"manufacturerPhone:{this.manufacturerPhone.RawString}");
+        }
+
+        public class Loader : IReadableObjectLoader<Manufacturer>
+        {
+            public Loader() { }
+            public Manufacturer Load(ILoadManager man)
+            {
+                return new Manufacturer(man);
+            }
         }
     }
 }
