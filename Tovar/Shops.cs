@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Tovar
 {
@@ -56,6 +57,8 @@ namespace Tovar
         {
             shops.Clear();
             LoadManager manufacturerLoader = new LoadManager("manufacturers.txt");
+            Logger logger = new Logger(new FileInfo("log.txt").AppendText());
+            LoadLogger loadLogger = new LoadLogger(manufacturerLoader, logger);
             manufacturerLoader.BeginRead();
             while (manufacturerLoader.IsLoading)
                 shops.Add(new Shop(manufacturerLoader.Read(new Manufacturer.Loader())));

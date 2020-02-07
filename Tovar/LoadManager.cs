@@ -21,9 +21,11 @@ namespace Tovar
         T Load(ILoadManager man);
     }
 
-    class LoadManager : ILoadManager
+    public class LoadManager : ILoadManager
     {
         public event EventHandler<IReadableObject> ObjectDidLoad;
+        public event EventHandler<FileInfo> DidStartLoad;
+        public event EventHandler<FileInfo> DidEndLoad;
 
         FileInfo file;
         StreamReader input;
@@ -54,6 +56,9 @@ namespace Tovar
             if (input != null)
                 throw new IOException("Load Error");
 
+            if (DidStartLoad != null)
+                DidStartLoad.Invoke(this, file);
+
             input = file.OpenText();
         }
         public bool IsLoading
@@ -73,6 +78,9 @@ namespace Tovar
         {
             if (input == null)
                 throw new IOException("Load Error");
+
+            if (DidEndLoad != null)
+                DidEndLoad.Invoke(this, file);
 
             input.Close();
         } 

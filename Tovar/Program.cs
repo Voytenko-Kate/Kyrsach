@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Tovar
 {
@@ -23,6 +24,8 @@ namespace Tovar
         {
             items.Clear();
             LoadManager itemLoader = new LoadManager("items.txt");
+            Logger logger = new Logger(new FileInfo("log.txt").AppendText());
+            LoadLogger loadLogger = new LoadLogger(itemLoader, logger);
             itemLoader.BeginRead();
             while (itemLoader.IsLoading)
                 items.Add(itemLoader.Read(new Item.Loader()));

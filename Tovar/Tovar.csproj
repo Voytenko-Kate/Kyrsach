@@ -51,6 +51,7 @@
     <Compile Include="ItemReader.cs" />
     <Compile Include="ItemWriter.cs" />
     <Compile Include="LoadManager.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Phone.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
